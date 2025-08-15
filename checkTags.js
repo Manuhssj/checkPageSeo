@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const readline = require('readline');
 
 async function checkUrl(url, selector = null) {
     try {
@@ -62,13 +63,25 @@ async function checkMultipleUrls(urls, selector = null) {
 }
 
 function loadUrlsFromFile(filePath) {
-    if (!fs.existsSync(filePath)) {
-        console.error(chalk.red(`❌ No se encontró el archivo: ${filePath}`));
+    const exePath = process.pkg ? path.dirname(process.execPath) : __dirname;
+    const fullPath = path.resolve(exePath, filePath);
+
+    try {
+        if (!fs.existsSync(fullPath)) {
+            console.error(chalk.red(`❌ No se encontró el archivo: ${fullPath}`));
+            process.exit(1);
+        }
+
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        return content.split(/\r?\n/).filter(line => line.trim() !== '');
+    } catch (err) {
+        if (err.code === 'EBUSY' || err.code === 'EPERM') {
+            console.error(chalk.red(`❌ El archivo está siendo usado por otro proceso: ${fullPath}`));
+        } else {
+            console.error(chalk.red(`❌ Error al leer el archivo: ${err.message}`));
+        }
         process.exit(1);
     }
-
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return content.split(/\r?\n/).filter(line => line.trim() !== '');
 }
 
 // 🧾 Uso: node checkMany.js urls.txt [.selector]
@@ -79,7 +92,18 @@ if (!txtFile) {
     process.exit(1);
 }
 
-const urls = loadUrlsFromFile(path.resolve(__dirname, txtFile));
+const urls = loadUrlsFromFile(txtFile);
 const selector = selectorArg || null;
 
-checkMultipleUrls(urls, selector);
+// Ejecuta todo y espera al usuario antes de cerrar
+async function main() {
+    await checkMultipleUrls(urls, selector);
+
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+}
+
+main();

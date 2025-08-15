@@ -1,9 +1,23 @@
 {
   "name": "checkpageseo",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "checkMany.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "checkTags.js",
+  "pkg": {
+    "targets": [
+      "node18-win-x64"
+    ],
+    "scripts": [
+      "checkMany.js"
+    ],
+    "assets": [
+      "node_modules/axios/**/*",
+      "node_modules/cheerio/**/*",
+      "node_modules/chalk/**/*"
+    ]
   },
   "keywords": [],
   "author": "",

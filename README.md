@@ -24,9 +24,18 @@ Por ejemplo, para revisar las URLs de un archivo llamado `urls.txt` y mostrar so
 2. Para esto se ocupara modificar el archivo `.bat`, en este se pasaran los parametros y este se usara para ejecutar el `.exe` con parametros
 3. Ejemplo de `.bat`:
 
+```bat
 @echo off
-REM Ejecuta el .exe con los argumentos que quieras
-.\checkpageseo.exe urls.txt ".internal-page"
+REM =============================================
+REM CheckPageSeo - Ejecutar el .exe con parámetros
+REM =============================================
+
+REM Define los parámetros
+SET URL_FILE=urls.txt
+SET CSS_SELECTOR=".internal-page"
+
+REM Ejecuta el .exe con los parámetros definidos
+.\checkpageseo.exe %URL_FILE% %CSS_SELECTOR%
 
 REM Pausa para que la ventana no se cierre automáticamente
 echo.

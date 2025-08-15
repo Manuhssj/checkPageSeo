@@ -1,0 +1,1 @@
+node checkTags.js urls.txt .internal-page
